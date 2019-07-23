@@ -38,6 +38,7 @@ pipeline {
                         }
                     }
                     steps {
+                        sh 'cargo update'
                         // Make sure static_assertion fails
                         echo 'Confirming static assertion...'
                         sh 'cargo check --all --all-targets || exit 0'
@@ -57,6 +58,7 @@ pipeline {
                         }
                     }
                     steps {
+                        sh 'cargo update'
                         // Make sure static_assertion fails
                         echo 'Confirming static assertion...'
                         sh 'cargo check --all --all-targets || exit 0'
@@ -142,7 +144,7 @@ pipeline {
                 //     }
                 //     steps {
                 //         echo 'Beginning tests...'
-                //         sh '/Users/jenkins/.cargo/bin/cargo test --all --features "empty"'
+                //         sh '/Users/jenkins/.cargo/bin/cargo test --all --features "metal"'
                 //         echo 'Tests done!'
                 //     }
                 // }
