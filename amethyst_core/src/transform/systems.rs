@@ -123,7 +123,10 @@ impl<'a> System<'a> for TransformSystem {
                     let local = locals.get_mut(*entity).expect("unreachable: We know this entity has a local because is was just modified.");
                     local.global_isometry = combined_isometry;
                     local.global_scale = combined_scale;
-                    local.global_matrix = local.global_isometry.to_homogeneous();
+                    local.global_matrix = local
+                        .global_isometry
+                        .to_homogeneous()
+                        .prepend_nonuniform_scaling(&local.global_scale);
                 }
             }
         }
