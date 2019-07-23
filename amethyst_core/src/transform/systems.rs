@@ -8,6 +8,8 @@ use hibitset::BitSet;
 
 use crate::transform::{HierarchyEvent, Parent, ParentHierarchy, Transform};
 
+use crate::math::Vector3;
+
 #[cfg(feature = "profiler")]
 use thread_profiler::profile_scope;
 
@@ -96,20 +98,32 @@ impl<'a> System<'a> for TransformSystem {
             if let Some(parent) = parents.get(*entity) {
                 let parent_dirty = self.local_modified.contains(parent.entity.id());
                 if parent_dirty || self_dirty {
-                    let combined_transform = {
+                    let (combined_isometry, combined_scale) = {
                         let local = locals.get(*entity);
                         if local.is_none() {
                             continue;
                         }
                         let local = local.unwrap();
+                        let scale = local.scale();
+                        let isometry = local.isometry();
                         if let Some(parent_global) = locals.get(parent.entity) {
-                            (parent_global.global_matrix * local.matrix())
+                            (
+                                parent_global.global_isometry * isometry,
+                                Vector3::new(
+                                    parent_global.global_scale[0] * scale[0],
+                                    parent_global.global_scale[1] * scale[1],
+                                    parent_global.global_scale[2] * scale[2],
+                                ),
+                            )
                         } else {
-                            local.matrix()
+                            (isometry.clone(), scale.clone())
                         }
                     };
                     self.local_modified.add(entity.id());
-                    locals.get_mut(*entity).expect("unreachable: We know this entity has a local because is was just modified.").global_matrix = combined_transform;
+                    let local = locals.get_mut(*entity).expect("unreachable: We know this entity has a local because is was just modified.");
+                    local.global_isometry = combined_isometry;
+                    local.global_scale = combined_scale;
+                    local.global_matrix = local.global_isometry.to_homogeneous();
                 }
             }
         }

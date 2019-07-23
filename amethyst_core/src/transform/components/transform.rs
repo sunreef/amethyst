@@ -29,6 +29,14 @@ pub struct Transform {
     /// The global transformation matrix.
     #[get = "pub"]
     pub(crate) global_matrix: Matrix4<f32>,
+
+    /// The global isometry of this transform.
+    #[get = "pub"]
+    pub(crate) global_isometry: Isometry3<f32>,
+
+    /// The global scale of this transform.
+    #[get = "pub"]
+    pub(crate) global_scale: Vector3<f32>,
 }
 
 impl Transform {
@@ -56,6 +64,8 @@ impl Transform {
             isometry: Isometry3::from_parts(na::convert(position), na::convert(rotation)),
             scale: na::convert(scale),
             global_matrix: na::one(),
+            global_isometry: Isometry3::identity(),
+            global_scale: Vector3::from_element(1.0),
         }
     }
 
@@ -567,6 +577,8 @@ impl Default for Transform {
             isometry: Isometry3::identity(),
             scale: Vector3::from_element(1.0),
             global_matrix: na::one(),
+            global_isometry: Isometry3::identity(),
+            global_scale: Vector3::from_element(1.0),
         }
     }
 }
