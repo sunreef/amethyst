@@ -29,11 +29,9 @@ pub struct Transform {
     /// The global transformation matrix.
     #[get = "pub"]
     pub(crate) global_matrix: Matrix4<f32>,
-
     /// The global isometry of this transform.
     #[get = "pub"]
     pub(crate) global_isometry: Isometry3<f32>,
-
     /// The global scale of this transform.
     #[get = "pub"]
     pub(crate) global_scale: Vector3<f32>,
@@ -150,6 +148,20 @@ impl Transform {
     #[inline]
     pub fn rotation_mut(&mut self) -> &mut UnitQuaternion<f32> {
         &mut self.isometry.rotation
+    }
+
+    /// Returns a reference to the global translation vector.
+    /// The global translation is updated in `TransformSystem`.
+    #[inline]
+    pub fn global_translation(&self) -> &Vector3<f32> {
+        &self.global_isometry.translation.vector
+    }
+
+    /// Returns a reference to the global rotation quaternion.
+    /// The global rotation is updated in `TransformSystem`.
+    #[inline]
+    pub fn global_rotation(&self) -> &UnitQuaternion<f32> {
+        &self.global_isometry.rotation
     }
 
     /// Move relatively to its current position, but the parent's (or
