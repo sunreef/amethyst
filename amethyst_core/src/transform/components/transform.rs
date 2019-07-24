@@ -65,7 +65,7 @@ impl Transform {
             scale: na::convert(scale),
             global_matrix: na::one(),
             global_isometry: Isometry3::identity(),
-            global_scale: Vector3::from_element(1.0),
+            global_scale: na::convert(scale),
         }
     }
 
